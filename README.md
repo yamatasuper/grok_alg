@@ -1,6 +1,6 @@
 # grok_alg
 
-A new Flutter project.
+Flutter grokking_algorithms.
 
 ## Getting Started
 
