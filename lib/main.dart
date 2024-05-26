@@ -58,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
     binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);
     selectionSort([4, 5, 3, 2, 6, 1]);
+    factorial(5);
   }
 
   int? binarySearch(List<int> items, int item) {
@@ -108,5 +109,20 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     debugPrint("sortedArray $sortedArray");
     return sortedArray;
+  }
+
+  int factorial(int x) {
+    int factorialInt;
+    // Факториал — это произведение всех натуральных чисел от 1 до данного числа
+    // факториал числа 5 будет равен 1 × 2 × 3 × 4 × 5 = 120
+    if (x == 1) {
+      factorialInt = 1;
+      debugPrint("factorial $factorialInt");
+      return factorialInt;
+    } else {
+      factorialInt = x * factorial(x - 1);
+      debugPrint("factorial $factorialInt");
+      return factorialInt;
+    }
   }
 }
