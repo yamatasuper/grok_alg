@@ -62,7 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int? binarySearch(List<int> items, int item) {
     var min = 0;
-    var max = items.length + 1;
+    var max = items.length - 1;
+    // индексы
     while (min <= max) {
       var mid = (min + max) / 2;
       var guess = items[mid.toInt()];
@@ -72,10 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
         return mid.toInt();
       }
       if (guess > item) {
-        max = mid.toInt();
+        max = mid.toInt() - 1;
+        // смещение шага влево
         debugPrint("> $max");
       } else {
-        min = mid.toInt();
+        min = mid.toInt() + 1;
+        // смещение шага вправо
         debugPrint("< $min");
       }
     }
