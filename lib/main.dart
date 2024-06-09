@@ -56,9 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() {
-    binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);
-    selectionSort([4, 5, 3, 2, 6, 1]);
-    factorial(5);
+    // binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);
+    // selectionSort([4, 5, 3, 2, 6, 1]);
+    // factorial(5);
+    print(quicksort([1, 5, 10, 25, 16, 1])); // => [1, 1, 5, 10, 16, 25];
   }
 
   int? binarySearch(List<int> items, int item) {
@@ -123,6 +124,66 @@ class _MyHomePageState extends State<MyHomePage> {
       factorialInt = x * factorial(x - 1);
       debugPrint("factorial $factorialInt");
       return factorialInt;
+    }
+  }
+
+  // loop sum
+
+  int sum(List<int> list) {
+    var total = 0;
+    for (var element in list) {
+      total += element;
+    }
+    return total;
+  }
+
+  // recursive sum
+
+  int sumRecusive(List<int> list) {
+    if (list.isEmpty) {
+      return 0;
+    }
+    var tempArray = list;
+    tempArray.removeAt(0);
+    return list[0] + sumRecusive(tempArray);
+  }
+
+  // recursive count
+
+  int count(List<int> list) {
+    if (list.isEmpty) {
+      return 0;
+    }
+    var tempArray = list;
+    tempArray.removeAt(0);
+    return 1 + count(tempArray);
+  }
+
+  // recursive max
+
+  int max(List<int> list) {
+    if (list.length == 2) {
+      return (list[0] > list[1]) ? list[0] : list[1];
+    } else if (list.length < 2) {
+      return list.first;
+    }
+    var tempArray = list;
+    tempArray.removeAt(0);
+    var subMax = max(tempArray);
+    return (list[0] > subMax) ? list[0] : subMax;
+  }
+
+// quicksort
+
+  List<int> quicksort(List<int> list) {
+    if (list.length < 2) {
+      return list;
+    } else {
+      var pivot = list[0];
+      var less = list.where((element) => element < pivot).toList();
+      var equal = list.where((element) => element == pivot).toList();
+      var greater = list.where((element) => element > pivot).toList();
+      return quicksort(less) + equal + quicksort(greater);
     }
   }
 }
