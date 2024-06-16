@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -217,4 +218,75 @@ class _MyHomePageState extends State<MyHomePage> {
     checkVoter("mike");
     checkVoter("mike");
   }
+}
+
+class Deque<T> {
+  final _list = DoubleLinkedQueue<T>();
+
+  bool get isEmpty => _list.isEmpty;
+
+  int get count => _list.length;
+
+  void enqueue(T element) {
+    _list.addLast(element);
+  }
+
+  void enqueueFront(T element) {
+    _list.addFirst(element);
+  }
+
+  T? dequeue() {
+    return isEmpty ? null : _list.removeFirst();
+  }
+
+  T? dequeueBack() {
+    return isEmpty ? null : _list.removeLast();
+  }
+
+  T? peekFront() {
+    return _list.isEmpty ? null : _list.first;
+  }
+
+  T? peekBack() {
+    return _list.isEmpty ? null : _list.last;
+  }
+}
+
+bool personIsSeller(String name) {
+  return name.endsWith('m');
+}
+
+Map<String, List<String>> graph = {
+  "you": ["alice", "bob", "claire"],
+  "bob": ["anuj", "peggy"],
+  "alice": ["peggy"],
+  "claire": ["thom", "jonny"],
+  "anuj": [],
+  "peggy": [],
+  "thom": [],
+  "jonny": []
+};
+
+bool search(String name) {
+  var searchQueue = Deque<String>();
+
+  graph[name]?.forEach(searchQueue.enqueue);
+
+  var searched = <String>[];
+
+  while (!searchQueue.isEmpty) {
+    var person = searchQueue.dequeue();
+
+    if (person != null && !searched.contains(person)) {
+      if (personIsSeller(person)) {
+        debugPrint('$person is a mango seller!');
+        return true;
+      } else {
+        graph[person]?.forEach(searchQueue.enqueue);
+        searched.add(person);
+      }
+    }
+  }
+
+  return false;
 }
