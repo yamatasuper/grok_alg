@@ -61,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // selectionSort([4, 5, 3, 2, 6, 1]);
     // factorial(5);
     print(quicksort([1, 5, 10, 25, 16, 1])); // => [1, 1, 5, 10, 16, 25];
+    graphDiikstra();
   }
 
   int? binarySearch(List<int> items, int item) {
@@ -291,82 +292,70 @@ bool search(String name) {
   return false;
 }
 
-// import Foundation
+void graphDiikstra() {
+  // Определяем граф в виде карты, где ключи - это узлы, а значения - карты соседей и их затрат
+  var graph = {
+    "start": {"a": 6.0, "b": 2.0},
+    "a": {"fin": 1.0},
+    "b": {"a": 3.0, "fin": 5.0},
+    "fin": {}
+  };
 
-// // the graph
-// var graph =  [String : [String: Double]] ()
-// graph["start"] = [String: Double]()
-// graph["start"]?["a"] = 6
-// graph["start"]?["b"] = 2
+  // Таблица затрат, которая хранит минимальные известные затраты до каждого узла
+  var infinity = double.infinity;
+  var costs = {
+    "a": 6.0,
+    "b": 2.0,
+    "fin": infinity
+  };
 
-// graph["a"] = [String: Double]()
-// graph["a"]?["fin"] = 1
+  // Таблица родителей, которая хранит, из какого узла мы пришли в текущий узел
+  var parents = {
+    "a": "start",
+    "b": "start",
+    "fin": null
+  };
 
-// graph["b"] = [String: Double]()
-// graph["b"]?["a"] = 3
-// graph["b"]?["fin"] = 5
+  // Список обработанных узлов
+  var processed = <String>[];
 
-// graph["fin"] = [String: Double]()
+  // Функция для нахождения узла с наименьшей стоимостью, который еще не был обработан
+  MapEntry<String, double>? findLowestCostNode(Map<String, double> costs) {
+    var lowestCost = double.infinity; // Начальная стоимость - бесконечность
+    MapEntry<String, double>? lowestCostNode; // Узел с наименьшей стоимостью
+    costs.forEach((node, cost) {
+      // Проходим через все узлы в таблице затрат
+      if (cost < lowestCost && !processed.contains(node)) {
+        // Если текущая стоимость меньше наименьшей и узел не был обработан
+        lowestCost = cost;
+        lowestCostNode = MapEntry(node, cost); // Обновляем узел с наименьшей стоимостью
+      }
+    });
+    return lowestCostNode; // Возвращаем узел с наименьшей стоимостью
+  }
 
-// // the costs table
-// let infinity = Double.infinity
-// var costs = [String: Double]()
-// costs["a"] = 6
-// costs["b"] = 2
-// costs["fin"] = infinity
+  // Находим узел с наименьшей стоимостью, который еще не был обработан
+  var nodeEntry = findLowestCostNode(costs);
 
-// // the parents table
-// var parents = [String: String]()
-// parents["a"] = "start"
-// parents["b"] = "start"
-// parents["fin"] = nil
+  // Пока есть узлы для обработки
+  while (nodeEntry != null) {
+    var node = nodeEntry.key; // Текущий узел
+    var cost = nodeEntry.value; // Стоимость до текущего узла
+    var neighbors = graph[node]!; // Соседи текущего узла
+    neighbors.forEach((n, nCost) {
+      // Проходим через всех соседей текущего узла
+      var newCost = cost + nCost; // Новая стоимость до соседа через текущий узел
+      if (costs[n]! > newCost) {
+        // Если новая стоимость меньше текущей известной стоимости до соседа
+        costs[n] = newCost; // Обновляем стоимость до соседа
+        parents[n] = node; // Обновляем родителя соседа
+      }
+    });
+    processed.add(node); // Добавляем текущий узел в список обработанных
+    nodeEntry = findLowestCostNode(costs); // Находим следующий узел с наименьшей стоимостью
+  }
 
-// var processed = [String]()
-
-// func findLowestCostNode(costs: [String: Double]) -> [String: Double] {
-//     var lowestCost = Double.infinity
-//     var lowestCostNode = [String: Double]()
-//     // Go through each node.
-//     for node in costs {
-//         let cost = node.value
-//         // If it's the lowest cost so far and hasn't been processed yet...
-//         if (cost < lowestCost) && !processed.contains(node.key) {
-//             // ... set it as the new lowest-cost node.
-//             lowestCost = cost
-//             lowestCostNode = [node.key : node.value]
-//         }
-        
-//     }
-//     return lowestCostNode
-// }
-
-// // Find the lowest-cost node that you haven't processed yet.
-// var node = findLowestCostNode(costs: costs)
-
-// // If you've processed all the nodes, this while loop is done.
-// while !node.isEmpty {
-//     // Swift Note: Unfortunately there are some limits for working with Dictionary inside Dictionary, so we have to use temp "nodeFirstKey" variable as workaround
-//     var nodeFirstKey = node.first?.key
-//     var cost = costs[nodeFirstKey!]
-//     // Go through all the neighbors of this node.
-//     var neighbors = graph[nodeFirstKey!]
-//     for n in (neighbors?.keys)! {
-//         var newCost = cost! + (neighbors?[n])!
-//         // If it's cheaper to get to this neighbor by going through this node...
-//         if costs[n]! > newCost {
-//             // ... update the cost for this node.
-//             costs[n] = newCost
-//             // This node becomes the new parent for this neighbor.
-//             parents[n] = nodeFirstKey
-//         }
-//     }
-//     // Mark the node as processed.
-//     processed.append(nodeFirstKey!)
-//     // Find the next node to process, and loop.
-//     node = findLowestCostNode(costs: costs)
-// }
-
-
-// print("Cost from the start to each node:")
-// print(costs) // -> ["b": 2.0, "fin": 6.0, "a": 5.0]
-
+  // Вывод затрат от начального узла до каждого узла
+  debugPrint("Cost from the start to each node:");
+  debugPrint(costs.toString()); // -> {b: 2.0, fin: 6.0, a: 5.0}
+}
