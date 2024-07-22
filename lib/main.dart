@@ -2,9 +2,10 @@ import 'dart:collection';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:grok_alg/main_repeat.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyAppRepeat());
 }
 
 class MyApp extends StatelessWidget {
@@ -60,8 +61,11 @@ class _MyHomePageState extends State<MyHomePage> {
     // binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);
     // selectionSort([4, 5, 3, 2, 6, 1]);
     // factorial(5);
-    print(quicksort([1, 5, 10, 25, 16, 1])); // => [1, 1, 5, 10, 16, 25];
-    graphDiikstra();
+    // print(quicksort([1, 5, 10, 25, 16, 1])); // => [1, 1, 5, 10, 16, 25];
+    // graphDiikstra();
+    List<int> numbers = [4, 1, 2];
+    List<int> sortedNumbers = sort(numbers);
+    print('sortedNumbers $sortedNumbers');
   }
 
   int? binarySearch(List<int> items, int item) {
@@ -303,18 +307,10 @@ void graphDiikstra() {
 
   // Таблица затрат, которая хранит минимальные известные затраты до каждого узла
   var infinity = double.infinity;
-  var costs = {
-    "a": 6.0,
-    "b": 2.0,
-    "fin": infinity
-  };
+  var costs = {"a": 6.0, "b": 2.0, "fin": infinity};
 
   // Таблица родителей, которая хранит, из какого узла мы пришли в текущий узел
-  var parents = {
-    "a": "start",
-    "b": "start",
-    "fin": null
-  };
+  var parents = {"a": "start", "b": "start", "fin": null};
 
   // Список обработанных узлов
   var processed = <String>[];
@@ -328,7 +324,8 @@ void graphDiikstra() {
       if (cost < lowestCost && !processed.contains(node)) {
         // Если текущая стоимость меньше наименьшей и узел не был обработан
         lowestCost = cost;
-        lowestCostNode = MapEntry(node, cost); // Обновляем узел с наименьшей стоимостью
+        lowestCostNode =
+            MapEntry(node, cost); // Обновляем узел с наименьшей стоимостью
       }
     });
     return lowestCostNode; // Возвращаем узел с наименьшей стоимостью
@@ -344,7 +341,8 @@ void graphDiikstra() {
     var neighbors = graph[node]!; // Соседи текущего узла
     neighbors.forEach((n, nCost) {
       // Проходим через всех соседей текущего узла
-      var newCost = cost + nCost; // Новая стоимость до соседа через текущий узел
+      var newCost =
+          cost + nCost; // Новая стоимость до соседа через текущий узел
       if (costs[n]! > newCost) {
         // Если новая стоимость меньше текущей известной стоимости до соседа
         costs[n] = newCost; // Обновляем стоимость до соседа
@@ -352,10 +350,32 @@ void graphDiikstra() {
       }
     });
     processed.add(node); // Добавляем текущий узел в список обработанных
-    nodeEntry = findLowestCostNode(costs); // Находим следующий узел с наименьшей стоимостью
+    nodeEntry = findLowestCostNode(
+        costs); // Находим следующий узел с наименьшей стоимостью
   }
 
   // Вывод затрат от начального узла до каждого узла
   debugPrint("Cost from the start to each node:");
   debugPrint(costs.toString()); // -> {b: 2.0, fin: 6.0, a: 5.0}
+}
+
+List<int> sort(List<int> numbers) {
+  // Создаем копию входного списка, чтобы не изменять оригинальный список
+  List<int> sortedNumbers = List.from(numbers);
+
+  // Реализуем алгоритм сортировки вставками
+  for (int i = 1; i < sortedNumbers.length; i++) {
+    int key = sortedNumbers[i];
+    int j = i - 1;
+
+    // Перемещаем элементы sortedNumbers[0..i-1], которые больше ключа,
+    // на одну позицию вперед, чтобы освободить место для ключа
+    while (j >= 0 && sortedNumbers[j] > key) {
+      sortedNumbers[j + 1] = sortedNumbers[j];
+      j = j - 1;
+    }
+    sortedNumbers[j + 1] = key;
+  }
+
+  return sortedNumbers;
 }
